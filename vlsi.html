@@ -1,0 +1,38 @@
+<!doctype html><html><head><meta charset='utf-8'><meta name='viewport' content='width=device-width,initial-scale=1'><title>VLSI College Finder</title><style>*{box-sizing:border-box}body{margin:0;font-family:Arial,sans-serif;background:#f5f7fb;color:#172033}header{background:linear-gradient(135deg,#111827,#294a86);color:#fff;padding:48px 20px}.wrap{max-width:1150px;margin:auto}h1{margin:0 0 8px;font-size:40px}.sub{color:#d9e3f5}.controls{display:flex;gap:12px;margin:25px 0;flex-wrap:wrap}input,select{padding:12px;border:1px solid #d8deea;border-radius:10px;background:#fff;font-size:14px}input{flex:1;min-width:250px}.card{background:#fff;border:1px solid #e2e8f0;border-radius:16px;margin:18px 0;overflow:hidden;box-shadow:0 5px 20px #17203312}.head{padding:22px 24px;border-bottom:1px solid #e8edf5;display:flex;justify-content:space-between}.college{font-size:23px;font-weight:750}.badge{background:#eef3ff;color:#3155a6;padding:7px 11px;border-radius:99px;font-size:12px;font-weight:700}table{width:100%;border-collapse:collapse;min-width:760px}th,td{text-align:left;padding:15px 20px;border-bottom:1px solid #edf0f5}th{font-size:12px;color:#68748a;background:#fafbfe;text-transform:uppercase}td{font-size:14px}.spec{font-weight:700}.cutoff{font-weight:800}.pct{font-weight:700;color:#23734b}.table{overflow:auto}.foot{color:#748096;padding:25px 0 45px;font-size:13px}</style></head><body><header><div class='wrap'><h1>VLSI College Finder</h1><div class='sub'>M.Tech VLSI & Embedded Systems — cutoff, internship and placement data</div></div></header><main class='wrap'><div class='controls'><input id='q' placeholder='Search college or specialization...'><select id='sort'><option value='college'>College A → Z</option><option value='collegeDesc'>College Z → A</option><option value='cutoff'>Cutoff: High → Low</option><option value='cutoffAsc'>Cutoff: Low → High</option><option value='intern'>Internship %: High → Low</option><option value='internAsc'>Internship %: Low → High</option><option value='pkg'>Average Package: High → Low</option><option value='pkgAsc'>Average Package: Low → High</option></select></div><div id='app'></div><div class='foot'>Data shown is based only on information supplied <script>const data=[
+{college:'NIT Kurukshetra',spec:'VLSI',cutoff:568,io:34,n:46,fo:11,pkg:23},
+{college:'NIT Kurukshetra',spec:'Embedded',cutoff:491,io:24,n:26,fo:6,pkg:24.6},
+{college:'NIT Jalandhar',spec:'VLSI',cutoff:499,io:30,n:45,fo:null,pkg:20},
+{college:'MANIT Bhopal',spec:'VLSI',cutoff:475,io:17,n:25,fo:null,pkg:18},
+{college:'MNIT Jaipur',spec:'VLSI',cutoff:560,io:15,n:24,fo:9,pkg:22},
+{college:'MNIT Jaipur',spec:'Embedded',cutoff:495,io:22,n:25,fo:17,pkg:19.34},
+{college:'MNNIT Allahabad',spec:'VLSI',cutoff:592,io:null,n:null,fo:null,pkg:null},
+{college:'NIT Calicut',spec:'VLSI',cutoff:633,io:18,n:25,ioBase:23,fo:null,pkg:20.21},
+{college:'NIT Calicut',spec:'Electronics Design and Technology',cutoff:613,io:24,n:25,fo:null,pkg:17},
+{college:'NIT Delhi',spec:'VLSI',cutoff:536,io:22,n:30,ioBase:29,fo:null,pkg:23.5},
+{college:'SVNIT Surat',spec:'VLSI',cutoff:512,io:null,n:30,fo:7,pkg:13.15},
+{college:'VNIT Nagpur',spec:'VLSI',cutoff:503,io:null,n:25,fo:10,pkg:9.71},
+{college:'NIT Rourkela',spec:'VLSI',cutoff:633,io:null,n:30,fo:null,pkg:null},
+{college:'NIT Surathkal',spec:'VLSI',cutoff:658,io:null,n:37,fo:27,pkg:24.41},
+{college:'NIT Surathkal',spec:'Communication Engineering',cutoff:564,io:null,n:33,fo:21,pkg:22.34},
+{college:'NIT Warangal',spec:'VLSI',cutoff:645,io:null,n:27,fo:12,pkg:28.72},
+{college:'IIT Jammu',spec:'VLSI + Signal Processing',cutoff:470,io:28,n:34,ioBase:34,fo:null,pkg:22},
+{college:'DTU',spec:'VLSI',cutoff:460,io:19,n:25,ioBase:22,fo:null,pkg:28.52},
+{college:'RVCE',spec:'VLSI',cutoff:null,io:23,n:35,fo:null,pkg:19.34},
+{college:'IIIT Bangalore',spec:'ECE',cutoff:589,io:28,n:30,fo:20,pkg:31.59}
+]
+const pct=x=>x.io!==null&&x.n!==null?(x.io/(x.ioBase||x.n))*100:null;
+function num(v,dir){return v===null?-Infinity:v*dir}
+function render(){
+let q=document.getElementById('q').value.toLowerCase(),s=document.getElementById('sort').value;
+let r=data.filter(x=>(x.college+' '+x.spec).toLowerCase().includes(q));
+if(s==='college')r.sort((a,b)=>a.college.localeCompare(b.college));
+if(s==='collegeDesc')r.sort((a,b)=>b.college.localeCompare(a.college));
+if(s==='cutoff')r.sort((a,b)=>num(b.cutoff,1)-num(a.cutoff,1));
+if(s==='cutoffAsc')r.sort((a,b)=>num(a.cutoff,1)-num(b.cutoff,1));
+if(s==='intern')r.sort((a,b)=>num(pct(b),1)-num(pct(a),1));
+if(s==='internAsc')r.sort((a,b)=>num(pct(a),1)-num(pct(b),1));
+if(s==='pkg')r.sort((a,b)=>num(b.pkg,1)-num(a.pkg,1));
+if(s==='pkgAsc')r.sort((a,b)=>num(a.pkg,1)-num(b.pkg,1));
+let groups={};r.forEach(x=>(groups[x.college]??=[]).push(x));
+document.getElementById('app').innerHTML=Object.entries(groups).map(([c,rs])=>`<section class='card'><div class='head'><div class='college'>${c}</div><div class='badge'>${rs.length} specialization${rs.length>1?'s':''}</div></div><div class='table'><table><thead><tr><th>Specialization</th><th>Strength</th><th>Cutoff</th><th>Internship Offers</th><th>Internship %</th><th>Full-time Offers</th><th>Avg Package</th></tr></thead><tbody>${rs.map(x=>`<tr><td class='spec'>${x.spec}</td><td>${x.n===null?'NA':x.n}</td><td class='cutoff'>${x.cutoff===null?'NA':x.cutoff}</td><td>${x.io===null?'NA':x.io+'/'+(x.ioBase||x.n)}</td><td class='pct'>${pct(x)===null?'NA':pct(x).toFixed(2)+'%'}</td><td>${x.fo===null?'<span style="color:#748096">NA</span>':x.fo+'/'+x.n}</td><td>${x.pkg===null?'NA':'<b>'+x.pkg+' LPA</b>'}</td></tr>`).join('')}</tbody></table></div></section>`).join('')||'<div class="card" style="padding:40px;text-align:center">No matching college found.</div>'}
+document.getElementById('q').oninput=render;document.getElementById('sort').onchange=render;render();</script></body></html></body></html>
